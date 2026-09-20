@@ -7,7 +7,7 @@
 - **Scope**: greenfield-scraper-mvp
 - **Start Date**: 2026-09-19T15:50:44Z
 - **State Version**: 8
-- **Active Agent**: aidlc-architect-agent
+- **Active Agent**: aidlc-product-agent
 - **Worktree Path**:
 - **Bolt Refs**:
 - **Practices Affirmed Timestamp**:
@@ -31,8 +31,8 @@
 
 ## Execution Plan Summary
 - **Total Stages**: 21
-- **Completed**: 4
-- **In Progress**: feasibility
+- **Completed**: 5
+- **In Progress**: scope-definition
 
 ## Runtime State
 - **Revision Count**: 1
@@ -57,8 +57,8 @@
 ### IDEATION PHASE
 - [x] intent-capture — EXECUTE
 - [ ] market-research — SKIP
-- [-] feasibility — EXECUTE
-- [ ] scope-definition — EXECUTE
+- [x] feasibility — EXECUTE
+- [-] scope-definition — EXECUTE
 - [ ] team-formation — SKIP
 - [ ] rough-mockups — EXECUTE
 - [ ] approval-handoff — EXECUTE
@@ -95,12 +95,12 @@ Per unit: [TBD]
 
 ## Current Status
 - **Lifecycle Phase**: IDEATION
-- **Current Stage**: feasibility
-- **Next Stage**: scope-definition
+- **Current Stage**: scope-definition
+- **Next Stage**: rough-mockups
 - **Status**: Running
-- **Last Updated**: 2026-09-20T01:56:06Z
+- **Last Updated**: 2026-09-20T02:43:36Z
 
 ## Session Resume Point
-- **Last Completed Stage**: intent-capture
-- **Next Action**: Execute Feasibility & Constraints
+- **Last Completed Stage**: feasibility
+- **Next Action**: Execute Scope Definition
 - **Pending Artifacts**: none

@@ -68,3 +68,4 @@
 
 <!-- Project-specific corrections from human feedback. -->
 <!-- Format: NEVER/ALWAYS [behavior] (learned [date]) -->
+- 外部サービスに依存する機能を扱うステージでは、利用者に質問する前に、そのサービスの利用規約と API 仕様を自分で調査する。調査でわかった事実は質問の前提として提示し、利用者には判断が必要な点だけを聞く (learned 2026-09-20) <!-- cid:260919-fukui-event-collector:feasibility:b08f418f4ecb36ec725b582c7e90d3b68ad0fc74ffbad81b1f0fb7e5891d7b16 -->
