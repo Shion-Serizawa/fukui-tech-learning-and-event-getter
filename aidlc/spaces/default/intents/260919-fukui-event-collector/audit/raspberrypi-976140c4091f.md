@@ -1661,3 +1661,419 @@
 **Agent**: aidlc-pipeline-deploy-agent
 
 ---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:05:08Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/team-practices.md
+**Context**: inception > practices-discovery > team-practices.md
+
+---
+
+## Artifact Updated
+**Timestamp**: 2026-09-20T06:05:12Z
+**Event**: ARTIFACT_UPDATED
+**Tool**: Edit
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/team-practices.md
+**Context**: inception > practices-discovery > team-practices.md
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:05:41Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/discovered-rules.md
+**Context**: inception > practices-discovery > discovered-rules.md
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:06:49Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/evidence.md
+**Context**: inception > practices-discovery > evidence.md
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:06:56Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-timestamp.md
+**Context**: inception > practices-discovery > practices-discovery-timestamp.md
+
+---
+
+## Subagent Completed
+**Timestamp**: 2026-09-20T06:07:46Z
+**Event**: SUBAGENT_COMPLETED
+**Agent Type**: aidlc-pipeline-deploy-agent
+**Agent ID**: abfc934f4c368e872
+**Message**: Step 2（リード草案）を完了し、レポートを返却しました。
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:07:47Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:11:26Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/contributions/aidlc-developer-agent.md
+**Context**: inception > practices-discovery > contributions > aidlc-developer-agent.md
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:11:47Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Subagent Completed
+**Timestamp**: 2026-09-20T06:11:48Z
+**Event**: SUBAGENT_COMPLETED
+**Agent Type**: aidlc-developer-agent
+**Agent ID**: ae8bbae7532f96cfd
+**Message**: Contribution written and report handed back to the caller.
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:11:53Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/contributions/aidlc-quality-agent.md
+**Context**: inception > practices-discovery > contributions > aidlc-quality-agent.md
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:11:57Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:12:27Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Subagent Completed
+**Timestamp**: 2026-09-20T06:12:29Z
+**Event**: SUBAGENT_COMPLETED
+**Agent Type**: aidlc-quality-agent
+**Agent ID**: af2ae2a6e08ef0deb
+**Message**: 寄稿を提出しました。
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:12:39Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:13:50Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Subagent Completed
+**Timestamp**: 2026-09-20T06:13:51Z
+**Event**: SUBAGENT_COMPLETED
+**Agent Type**: aidlc-devsecops-agent
+**Agent ID**: afa405f7adb255e22
+**Message**: Contribution written and report delivered to the lead.
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:14:04Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:15:31Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-questions.md
+**Context**: inception > practices-discovery > practices-discovery-questions.md
+
+---
+
+## Decision Recorded
+**Timestamp**: 2026-09-20T06:15:49Z
+**Event**: DECISION_RECORDED
+**Stage**: practices-discovery
+**Decision**: 開発の進め方に関する13個の確認事項（作業の進め方、最初に作るもの、テストの方針、公開の仕方、コードの書き方、計画の穴）
+**Options**: Q1-Q13 をファイルに記入
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:24:36Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Question Answered
+**Timestamp**: 2026-09-20T06:26:15Z
+**Event**: QUESTION_ANSWERED
+**Stage**: practices-discovery
+**Details**: Q1: A（GitHub 公開リポジトリ） / Q2: A（PR + ブランチ保護。「ひとしきりのセットアップが終わったら、githubでリポジトリ作成 & ブランチ保護の設定をする予定」） / Q3: A（Cloudflare 上で動くところまで） / Q4: D（おまかせ。「A寄りの気持ちだが任せた」） / Q5: B（行カバレッジ80%） / Q6: A（テスト用データは手で書く） / Q7: B（CI から自動デプロイ） / Q8: B（Worker と Pages を分ける） / Q9: A（本番ひとつ） / Q10: C（おまかせ。「だが、Vite+ （もしくはその中で使用しているoxlintも検討対象になりそう）」） / Q11: B（「ある程度枯れているものはつかってよい」ただし公開から7dayは入れないなどのサプライチェーン攻撃対策を最低限入れる） / Q12: A（計画は変えない） / Q13: B（「フロントとバックエンドで型が同一なら、共通にして、そこから依存する形にしたい。リンターはAI-Coding前提なのである程度厳し目でも良さそう。」）
+
+---
+
+## Decision Recorded
+**Timestamp**: 2026-09-20T06:26:15Z
+**Event**: DECISION_RECORDED
+**Stage**: practices-discovery
+**Decision**: Does this all look correct before I generate the artifact?
+**Options**: Looks correct,Request changes
+**Checkpoint**: Consolidated Summary Confirmation
+**Questions File**: aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-questions.md
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:29:06Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Decision Recorded
+**Timestamp**: 2026-09-20T06:29:58Z
+**Event**: DECISION_RECORDED
+**Stage**: practices-discovery
+**Decision**: 要約確認への指摘内容
+**Options**: 自由記述
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:29:58Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Question Answered
+**Timestamp**: 2026-09-20T06:30:13Z
+**Event**: QUESTION_ANSWERED
+**Stage**: practices-discovery
+**Details**: 「formatはOxfmtとどっちがよいかな？ 80%はフロント側はやらなくて良い。」および「ついでにテストのVitest」。反映: カバレッジ80%はWorker側のみ対象（Pages側は対象外）、整形は Oxfmt、テスト基盤は Vitest（Workers側は @cloudflare/vitest-pool-workers）
+
+---
+
+## Error Logged
+**Timestamp**: 2026-09-20T06:30:13Z
+**Event**: ERROR_LOGGED
+**Tool**: aidlc-log
+**Command**: aidlc-log engine log decision --stage practices-discovery --checkpoint summary-confirmation --questions-file aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-questions.md --decision Does this all look correct before I generate the artifact? --options Looks correct,Request changes
+**Error**: Summary confirmation section in aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-questions.md must contain exactly one `[Answer]:` line with a blank value before this command runs.
+
+---
+
+## Decision Recorded
+**Timestamp**: 2026-09-20T06:30:32Z
+**Event**: DECISION_RECORDED
+**Stage**: practices-discovery
+**Decision**: Does this all look correct before I generate the artifact?
+**Options**: Looks correct,Request changes
+**Checkpoint**: Consolidated Summary Confirmation
+**Questions File**: aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-questions.md
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:31:10Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Summary Confirmation Recorded
+**Timestamp**: 2026-09-20T06:31:18Z
+**Event**: SUMMARY_CONFIRMATION_RECORDED
+**Stage**: practices-discovery
+**Details**: Looks correct
+**Checkpoint**: Consolidated Summary Confirmation
+**Questions File**: aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-questions.md
+**Questions SHA-256**: b0e560289516bd270a304e8f2afc35b48362d4bd50a8a0f73545d070ef0a1f32
+**Hash Scope**: confirmed-content-v1
+**Summary Authorization Id**: 0b578b741d8335b4d1595cebcf66ea2b06f3c4a7bf14a8beaed276f1a0344106
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:35:36Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/team-practices.md
+**Context**: inception > practices-discovery > team-practices.md
+**Summary Authorization Id**: 0b578b741d8335b4d1595cebcf66ea2b06f3c4a7bf14a8beaed276f1a0344106
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:36:35Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/discovered-rules.md
+**Context**: inception > practices-discovery > discovered-rules.md
+**Summary Authorization Id**: 0b578b741d8335b4d1595cebcf66ea2b06f3c4a7bf14a8beaed276f1a0344106
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:39:08Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/evidence.md
+**Context**: inception > practices-discovery > evidence.md
+**Summary Authorization Id**: 0b578b741d8335b4d1595cebcf66ea2b06f3c4a7bf14a8beaed276f1a0344106
+
+---
+
+## Artifact Created
+**Timestamp**: 2026-09-20T06:39:15Z
+**Event**: ARTIFACT_CREATED
+**Tool**: Write
+**File**: <project-dir>/aidlc/spaces/default/intents/260919-fukui-event-collector/inception/practices-discovery/practices-discovery-timestamp.md
+**Context**: inception > practices-discovery > practices-discovery-timestamp.md
+**Summary Authorization Id**: 0b578b741d8335b4d1595cebcf66ea2b06f3c4a7bf14a8beaed276f1a0344106
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:40:07Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Subagent Completed
+**Timestamp**: 2026-09-20T06:40:08Z
+**Event**: SUBAGENT_COMPLETED
+**Agent Type**: aidlc-pipeline-deploy-agent
+**Agent ID**: abfc934f4c368e872
+**Message**: Step 5（リード統合）を完了し、レポートを返却しました。
+
+---
+
+## Practices Discovered
+**Timestamp**: 2026-09-20T06:40:22Z
+**Event**: PRACTICES_DISCOVERED
+**Sources Scanned**: org.md, project.md, aidlc-state.md, ideation artifacts (initiative-brief, decision-log, constraint-register, raid-log), repository state (git remote, .gitignore)
+**Drafts**: team-practices.md, discovered-rules.md
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T06:40:22Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Decision Recorded
+**Timestamp**: 2026-09-20T06:41:07Z
+**Event**: DECISION_RECORDED
+**Stage**: practices-discovery
+**Decision**: 今回の作業から次回以降に残す学びはあるか
+**Options**: 委任先の報告は事実確認してから中継する,計画変更時にスコープファイルの説明文も見直す,Nothing to add
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T11:45:03Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Question Answered
+**Timestamp**: 2026-09-20T11:45:18Z
+**Event**: QUESTION_ANSWERED
+**Stage**: practices-discovery
+**Details**: Nothing to add
+
+---
+
+## Stage Awaiting Approval
+**Timestamp**: 2026-09-20T11:45:19Z
+**Event**: STAGE_AWAITING_APPROVAL
+**Stage**: practices-discovery
+
+---
+
+## Human Turn
+**Timestamp**: 2026-09-20T11:45:56Z
+**Event**: HUMAN_TURN
+**Session**: a3d5d88b-1376-4aab-9afe-d9b5eff28c37
+
+---
+
+## Practices Affirmed
+**Timestamp**: 2026-09-20T11:46:01Z
+**Event**: PRACTICES_AFFIRMED
+**Affirming User**: seri
+**Sections Written**: Way of Working, Walking Skeleton, Testing Posture, Deployment, Code Style
+**Mandated Rules Appended**: 23
+**Forbidden Rules Appended**: 13
+
+---
+
+## Gate Approved
+**Timestamp**: 2026-09-20T11:46:15Z
+**Event**: GATE_APPROVED
+**Stage**: practices-discovery
+**User Input**: Approve
+
+---
+
+## Stage Completion
+**Timestamp**: 2026-09-20T11:46:15Z
+**Event**: STAGE_COMPLETED
+**Stage**: practices-discovery
+**Validation Basis**: {"graphContract":"sha256:886af627a0fea6d271a662e4a54b4c5993ecee715d6144d46d4a58c2bc3d19bb","inputs":[],"outputs":[{"artifact":"discovered-rules","contentHash":"sha256:c1a614f3d1bbccb3192101b9ff25db1a63055d188837d5415ad71312a7581bcf","instanceCount":1,"presentCount":1,"producer":"practices-discovery","required":true,"structureHash":"sha256:c4dadbe817b85123c83c72b50a538d7ccb94acb332c187e6ee5589296d0e59a6"},{"artifact":"evidence","contentHash":"sha256:ceebbf5a86c7194be42baa067f8df7b38a0670820516961f2e1218f461696808","instanceCount":1,"presentCount":1,"producer":"practices-discovery","required":true,"structureHash":"sha256:f73699597fb69858253be924d065865494d1825a270b32898afeccda9e5b46be"},{"artifact":"practices-discovery-timestamp","contentHash":"sha256:55eddf01f045f7f67a3a56ef2cf9427bb01b39fc8250e69d70d9c35541f5b0e0","instanceCount":1,"presentCount":1,"producer":"practices-discovery","required":true,"structureHash":"sha256:797c7af449855006ea336347a0b5d3f264a17882cce55484b689b056ce549df0"},{"artifact":"team-practices","contentHash":"sha256:4ffce56c4406e116f3b4f27875577a632caadc40bb63b00d0607e14e5ecf3301","instanceCount":1,"presentCount":1,"producer":"practices-discovery","required":true,"structureHash":"sha256:b1759b2d9608cfc062488bc9e298c308dc19ecb172e84fa6dc9031c916770c27"}],"projectType":"greenfield","schema":3}
+**Details**: Stage Practices Discovery approved by gate
+**Tokens In**: 178
+**Tokens Out**: 133010
+**Cache Read**: 27657906
+**Cache Write**: 1305977
+**Cost USD**: 28.03
+**By Model**: opus-5=28.03
+**By Agent**: main=19.52; aidlc-pipeline-deploy-agent=4.87; aidlc-quality-agent=1.34; aidlc-developer-agent=1.00; aidlc-devsecops-agent=1.31
+**Tokens By Model**: opus-5=178/133k/27.7M/1.3M
+**Tokens By Agent**: main=74/38.8k/22.6M/723.2k; aidlc-pipeline-deploy-agent=58/49.8k/3.4M/312k; aidlc-quality-agent=18/14.8k/673.2k/100.9k; aidlc-developer-agent=12/11.6k/416.1k/80.1k; aidlc-devsecops-agent=16/18k/588.5k/89.7k
+
+---
+
+## Stage Start
+**Timestamp**: 2026-09-20T11:46:15Z
+**Event**: STAGE_STARTED
+**Stage**: requirements-analysis
+**Agent**: aidlc-product-agent
+
+---
