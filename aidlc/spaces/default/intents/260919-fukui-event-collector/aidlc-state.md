@@ -7,7 +7,7 @@
 - **Scope**: greenfield-scraper-mvp
 - **Start Date**: 2026-09-19T15:50:44Z
 - **State Version**: 8
-- **Active Agent**: aidlc-design-agent
+- **Active Agent**: aidlc-delivery-agent
 - **Worktree Path**:
 - **Bolt Refs**:
 - **Practices Affirmed Timestamp**:
@@ -31,11 +31,11 @@
 
 ## Execution Plan Summary
 - **Total Stages**: 21
-- **Completed**: 6
-- **In Progress**: rough-mockups
+- **Completed**: 7
+- **In Progress**: approval-handoff
 
 ## Runtime State
-- **Revision Count**: 1
+- **Revision Count**: 3
 
 ## Phase Progress
 <!-- Status values: Pending, Active, Verified, Skipped -->
@@ -60,8 +60,8 @@
 - [x] feasibility — EXECUTE
 - [x] scope-definition — EXECUTE
 - [ ] team-formation — SKIP
-- [-] rough-mockups — EXECUTE
-- [ ] approval-handoff — EXECUTE
+- [x] rough-mockups — EXECUTE
+- [-] approval-handoff — EXECUTE
 
 ### INCEPTION PHASE
 - [ ] reverse-engineering — SKIP
@@ -95,12 +95,12 @@ Per unit: [TBD]
 
 ## Current Status
 - **Lifecycle Phase**: IDEATION
-- **Current Stage**: rough-mockups
-- **Next Stage**: approval-handoff
+- **Current Stage**: approval-handoff
+- **Next Stage**: practices-discovery
 - **Status**: Running
-- **Last Updated**: 2026-09-20T03:45:40Z
+- **Last Updated**: 2026-09-20T04:08:57Z
 
 ## Session Resume Point
-- **Last Completed Stage**: scope-definition
-- **Next Action**: Execute Rough Mockups
+- **Last Completed Stage**: rough-mockups
+- **Next Action**: Execute Approval & Handoff
 - **Pending Artifacts**: none
