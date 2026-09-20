@@ -15,6 +15,8 @@
 <!-- This monorepo requires package-scoped branch names and a package owner -->
 <!-- review in addition to the team's normal merge policy. -->
 
+- AI-DLC のステージが1つ承認されるごとに、そのステージの成果物を Conventional Commits 形式で1コミットにまとめてコミットする (learned 2026-09-20) <!-- cid:260919-fukui-event-collector:intent-capture:014053421d20d4e36e891c19386f071ddcc2bd2c34ca58c3724b7ec871448a3f -->
+
 ## Walking Skeleton
 
 <!-- Project-specific specialisation. Example: -->
