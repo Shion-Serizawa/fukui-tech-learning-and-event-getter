@@ -40,20 +40,23 @@
 
 `events[]` の各要素:
 
-| フィールド   | 型                                                                                                   | 必須 | 変換先                                            |
-| ------------ | ---------------------------------------------------------------------------------------------------- | ---- | ------------------------------------------------- |
-| `id`         | 整数                                                                                                 | 必須 | `sourceEventId`（10進の文字列にする）             |
-| `title`      | 空でない文字列                                                                                       | 必須 | `title`                                           |
-| `url`        | `https://connpass.com/` で始まる文字列、または `https://<サブドメイン>.connpass.com/` で始まる文字列 | 必須 | `url`                                             |
-| `started_at` | ISO 8601（タイムゾーン付き）                                                                         | 必須 | `startedAt`                                       |
-| `ended_at`   | ISO 8601（タイムゾーン付き）。`started_at` 以上                                                      | 必須 | `endedAt`                                         |
-| `place`      | 文字列または null                                                                                    | 任意 | `place`（空文字は null）                          |
-| `address`    | 文字列または null                                                                                    | 任意 | `address`（空文字は null）                        |
-| `limit`      | 整数 ≥ 0 または null                                                                                 | 任意 | `capacity`（0 と null は「定員なし」として null） |
-| `accepted`   | 整数 ≥ 0                                                                                             | 必須 | `accepted`                                        |
-| `hash_tag`   | 文字列または null                                                                                    | 任意 | `hashTag`（空文字は null。先頭の `#` は取り除く） |
+| フィールド    | 型                                                              | 必須 | 変換先                                                                                                         |
+| ------------- | --------------------------------------------------------------- | ---- | -------------------------------------------------------------------------------------------------------------- |
+| `id`          | 整数                                                            | 必須 | `sourceEventId`（10進の文字列にする）                                                                          |
+| `title`       | 空でない文字列                                                  | 必須 | `title`                                                                                                        |
+| `event_url`   | `https:` で、ホストが `connpass.com` か `*.connpass.com` の URL | 必須 | `url`。**`javascript:` などのリンクを公開ページと RSS に出さないための検証でもある**（エスケープでは防げない） |
+| `started_at`  | ISO 8601（タイムゾーン付き）                                    | 必須 | `startedAt`                                                                                                    |
+| `ended_at`    | ISO 8601（タイムゾーン付き）。`started_at` 以上                 | 必須 | `endedAt`                                                                                                      |
+| `place`       | 文字列または null                                               | 任意 | `place`（空文字は null）                                                                                       |
+| `address`     | 文字列または null                                               | 任意 | `address`（空文字は null）                                                                                     |
+| `limit`       | 整数 ≥ 0 または null                                            | 任意 | `capacity`（0 と null は「定員なし」として null）                                                              |
+| `accepted`    | 整数 ≥ 0                                                        | 必須 | `accepted`                                                                                                     |
+| `hash_tag`    | 文字列または null                                               | 任意 | `hashTag`（空文字は null。先頭の `#` は取り除く）                                                              |
+| `open_status` | 文字列または null                                               | 任意 | 保存しない。`cancelled` のイベントは取得しなかったものとして扱う（COL-13）                                     |
 
-「必須」が欠けている、型が違う、`url` が connpass でない、`ended_at < started_at` — のいずれかなら、その収集回を `invalid_response` で失敗させる（COL-11）。
+[S6] では `place` / `address` / `hash_tag` は文字列、`limit` は整数で、null の扱いは書かれていない。空文字と null の両方を受ける。
+
+「必須」が欠けている、型が違う、`event_url` が connpass でない、`ended_at < started_at` — のいずれかなら、その収集回を `invalid_response` で失敗させる（COL-11）。
 
 「任意」のフィールドがレスポンスに**存在しない**ことは許す（null として扱う）。V-01 で実データを見て、必須・任意の区分を見直す。
 

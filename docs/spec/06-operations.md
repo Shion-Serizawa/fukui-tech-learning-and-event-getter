@@ -17,7 +17,7 @@ npm run dev:web              # Pages（公開一覧）
 npm run check                # 型・lint・整形・テスト（カバレッジ込み）・仕様との対応
 ```
 
-ローカルの `npm run dev` で収集を起動すると、`.dev.vars` のキーで**本物の connpass API を呼ぶ**（1回の収集で数リクエスト、1100ms 間隔）。何度も連打しない。日常の確認は自動テスト（偽の fetch + フィクスチャ。外部通信は遮断されている）で行う。
+ローカルで `npm run dev` を起動し `/__scheduled` を叩くと、`.dev.vars` のキーで**本物の connpass API を呼ぶ**（1回の収集で数リクエスト、1100ms 間隔）。何度も連打しない。日常の確認は自動テスト（偽の fetch + フィクスチャ。外部通信は遮断されている）で行う。
 
 ## シークレット
 
@@ -55,16 +55,30 @@ npm run check                # 型・lint・整形・テスト（カバレッジ
 
 ## デプロイ
 
-**未作成**。骨格（収集 + 保存）の実装と一緒に作る。決まっていること:
+`.github/workflows/deploy.yml`。`main` への push でだけ動く（`pull_request` では動かない）。
 
-- 別ワークフロー `.github/workflows/deploy.yml`。`on: push` の `main` のみで動く。`pull_request` では動かない
-- CI のジョブが通った後に、Worker（`wrangler deploy`）→ D1 マイグレーション（`wrangler d1 migrations apply --remote`）→ Pages（`wrangler pages deploy`）の順
-- 初回は手で D1 を作り（`wrangler d1 create hokuriku-it-events`）、`database_id` を `wrangler.jsonc` と `web/wrangler.jsonc` に書く（ID はシークレットではない）
+1. `npm ci` → `npm run check`（デプロイ前にもう一度検査する）
+2. D1 マイグレーション（`wrangler d1 migrations apply --remote`）。スキーマ変更は列の追加のみなので、コードより先に適用してよい
+3. Worker（`wrangler deploy`）
+4. Pages（`wrangler pages deploy --cwd web`）
+5. 確認: 公開ページに「最終収集」が出ること、`/feed.xml` が RSS を返すこと
+
+Cloudflare の API トークンは手順 2〜4 のステップにだけ渡す。`npm ci` やテストには渡さない（依存パッケージのスクリプトからトークンを読まれる経路を作らない）。
+
+### 初回だけ手で行うこと（Cloudflare・Discord・GitHub）
+
+- [ ] D1 を作る: `wrangler d1 create hokuriku-it-events`。表示された `database_id` を `wrangler.jsonc` と `web/wrangler.jsonc` の `d1_databases` に書く（ID はシークレットではない）
+- [ ] Pages のプロジェクトを作る: `wrangler pages project create hokuriku-it-events --production-branch main`
+- [ ] Worker のシークレットを入れる: `wrangler secret put CONNPASS_API_KEY`、`wrangler secret put DISCORD_WEBHOOK_URL`
+- [ ] Discord で通知先チャンネルの Webhook を作る（本人だけが見るチャンネル）
+- [ ] Cloudflare のスコープ付き API トークンを作る（Workers Scripts:Edit / D1:Edit / Cloudflare Pages:Edit、対象アカウントのみ）。**Global API Key は使わない**
+- [ ] GitHub の Environment `production` に、シークレット `CLOUDFLARE_API_TOKEN`、変数 `CLOUDFLARE_ACCOUNT_ID` と `PUBLIC_SITE_URL`（例: `https://hokuriku-it-events.pages.dev`）を入れる
 
 ### デプロイ後の確認
 
-- 公開ページが 200 を返し、フッターに最終収集日時が出る（WEB-10）
-- Cron は次の起動（毎時17分）を待つ必要があるので、デプロイ直後の確認には含めない。次の17分過ぎに最終収集日時が更新されることを見る
+- 公開ページが 200 を返し、フッターに最終収集日時が出る（WEB-10）。初回は「まだありません」
+- Cron は次の起動（毎時17分）を待つ必要がある。次の17分過ぎに最終収集日時が更新されることを見る
+- 収集が止まると、3時間後に Discord に停止通知が届く（HLT-02）
 
 ### ロールバック
 
@@ -76,15 +90,17 @@ npm run check                # 型・lint・整形・テスト（カバレッジ
 
 ## 無料枠の見積もり（C-09）
 
-| 資源               | 使用量の見積もり                                           | 無料枠に対して                      |
-| ------------------ | ---------------------------------------------------------- | ----------------------------------- |
-| Worker の起動      | Cron 24回/日 + RSS リーダーの取得（多くて数百回/日）       | 10万リクエスト/日に対して十分小さい |
-| Worker の CPU 時間 | 収集1回は待機が大半で、CPU は数十 ms 程度の見込み          | 実測で確認する                      |
-| D1 の行の読み書き  | 収集1回で数十〜数百行の書き込み、表示1回で数百行の読み取り | 十分小さい                          |
-| D1 の容量          | 30日より古いものを消す（STO-06）ので数千行程度             | 十分小さい                          |
-| Pages              | 静的ファイル + Functions の呼び出し                        | 十分小さい                          |
+無料枠は**1回の起動あたり**の上限が厳しい。収集の実装はこれに合わせてある。
 
-構成を変えるときはこの表を更新する。具体的な上限値は Cloudflare の公式ドキュメントで確認すること（変わることがある）。
+| 上限（Workers Free / D1 Free）    | 本件の使い方                                                                            | 余裕                                                                                                                       |
+| --------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 1回の起動あたりの D1 クエリ数     | 収集1回: 書き込みのバッチ1つ（5文）+ 健全性の確認（4文程度）。表示1回: バッチ1つ（2文） | イベントを1件ずつ upsert すると上限に当たるので、JSON の1パラメータ + `json_each` で1文にまとめている（`src/db/write.ts`） |
+| 1回の起動あたりのサブリクエスト数 | connpass 3〜数リクエスト（最大 30）+ Discord 0〜1                                       | 十分                                                                                                                       |
+| 1回の起動あたりの CPU 時間        | 待機（1100ms × 数回）は CPU 時間に数えない。JSON の解析と検証が数百件分                 | **実測で確認する**（デプロイ後に Workers のログで CPU 時間を見る）                                                         |
+| 1日あたりのリクエスト数           | Cron 24回 + 公開ページ・RSS のアクセス                                                  | 十分                                                                                                                       |
+| D1 の容量                         | 30日より古いものを消す（STO-06）ので数千行程度                                          | 十分                                                                                                                       |
+
+具体的な上限値は Cloudflare の公式ドキュメントで確認すること（変わることがある）。構成を変えるときはこの表を更新する。
 
 ## 実レスポンスとの突き合わせ（V-nn）
 

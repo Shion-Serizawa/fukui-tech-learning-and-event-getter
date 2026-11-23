@@ -48,7 +48,7 @@ Worker と Pages を分ける（Q8=B）。収集と通知は Worker、公開ペ�
 | markup        | `src/markup/`    | エスケープ付きの `html` / `xml` タグ                                                         | なし                                         | なし（純粋）   |
 | log           | `src/log.ts`     | 許可リスト方式のログ出力                                                                     | なし                                         | なし           |
 | connpass      | `src/connpass/`  | connpass API の呼び出し・DTO・実行時検証・変換。**外からは `index.ts` だけを import できる** | domain, log                                  | —              |
-| db            | `src/db/`        | D1 への SQL のすべて                                                                         | domain, log                                  | `cloudflare:*` |
+| db            | `src/db/`        | D1 への SQL のすべて。読み取りは `read.ts`、書き込みは `write.ts`                            | domain, log                                  | `cloudflare:*` |
 | notify        | `src/notify/`    | Discord Webhook への送信。外への HTTP 呼び出しは connpass 以外ではここだけ                   | domain, log                                  | —              |
 | collector     | `src/collector/` | 収集回の手順（取得 → 検証 → 全か無かの書き込み → 記録 → 停止判定と通知）                     | domain, connpass, db, notify, log            | —              |
 | feed          | `src/feed/`      | RSS の組み立て（データを引数で受け取る純粋関数）                                             | domain, markup                               | なし（純粋）   |
@@ -97,6 +97,7 @@ AI-DLC で確定した規則（`aidlc/spaces/default/memory/project.md` の Mand
 | 規則                                                     | 強制手段                                                                                    |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | D1 への SQL は `src/db/` だけ                            | lint `no-sql-outside-db`                                                                    |
+| 公開面（Pages）は D1 に書き込まない                      | lint `import-boundaries`（Pages の入口から import できるのは `src/db/read.ts` だけ）        |
 | 主催者名をどこにも持たない（C-14）                       | lint `no-organizer-fields` + test STO-07（スキーマ）+ test WEB-17（出力）                   |
 | 共有する型は1か所（`src/domain/`）                       | lint `import-boundaries`（Pages の入口は domain に依存できる。他に型の置き場所がない）      |
 | 現在時刻は境界で1度だけ取得                              | lint `no-ambient-clock`                                                                     |
