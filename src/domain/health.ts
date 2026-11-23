@@ -3,9 +3,10 @@ import { HOUR_MS, formatJstMinute } from "./time.ts";
 
 /**
  * HLT-01: 最新の成功回の終了からこれを超えたら停止中。
- * 終了時刻は起動時刻より数秒遅いので、実際に停止中と判定されるのは4回目の失敗の時点（最後の成功から約4時間後）。
+ * 収集は3時間ごと。成功回の終了は起動より数十秒遅いので、9時間ではなく8時間で区切ると、
+ * 3回続けて失敗した時点（最後の成功から約9時間後）で停止中と判定される。
  */
-export const STALE_AFTER_MS = 3 * HOUR_MS;
+export const STALE_AFTER_MS = 8 * HOUR_MS;
 
 export function isStale(lastSuccessFinishedAt: number | null, now: number): boolean {
   return lastSuccessFinishedAt === null || now - lastSuccessFinishedAt > STALE_AFTER_MS;

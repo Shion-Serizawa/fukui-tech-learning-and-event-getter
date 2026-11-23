@@ -149,6 +149,15 @@ snake_case の識別子は2つの変換点（connpass DTO → ドメイン型、
 | `failure_kind`              | TEXT NULL | 失敗の種別。成功回は NULL、失敗回は必須（CHECK 制約）      |
 | `fetched_count`             | INTEGER   | その回で取得したイベント数（失敗回は失敗までに取得した数） |
 
+### `prefecture_syncs`
+
+県ごとに「最後に取得・保存できた収集回の now」を持つ（COL-08、STO-05）。一覧と RSS は、イベントの `last_seen_at` がその県の `synced_at` と一致するものだけを出す。
+
+| 列           | 型             | 意味                                                                             |
+| ------------ | -------------- | -------------------------------------------------------------------------------- |
+| `prefecture` | TEXT（主キー） | fukui / ishikawa / toyama（CHECK 制約）                                          |
+| `synced_at`  | INTEGER        | その県を最後に取得・保存できた収集回の now。イベントの保存と同じバッチで更新する |
+
 ### `notifications`
 
 Discord への通知の送信済み記録（HLT-02, HLT-03）。同じ停止について2通目を送らないために使う。

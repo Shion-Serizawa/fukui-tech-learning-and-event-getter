@@ -1,4 +1,10 @@
-import { FAILURE_KINDS, type CollectionRun, type FailureKind, type HokurikuEvent } from "../domain/event.ts";
+import {
+  FAILURE_KINDS,
+  type CollectionRun,
+  type FailureKind,
+  type HokurikuEvent,
+  type Prefecture,
+} from "../domain/event.ts";
 import { DAY_MS } from "../domain/time.ts";
 import { readField, readNumber } from "./rows.ts";
 
@@ -61,18 +67,37 @@ function toJsonRow(e: HokurikuEvent): Record<string, string | number | null> {
   };
 }
 
+const UPSERT_SYNC = `INSERT INTO prefecture_syncs (prefecture, synced_at) VALUES (?1, ?2)
+  ON CONFLICT (prefecture) DO UPDATE SET synced_at = excluded.synced_at`;
+
 /**
- * COL-08, COL-09, STO-06: 成功回の反映を1つのバッチで行う（全か無か）。
- * startedAt がその回の now であり、first_seen_at / last_seen_at になる。
+ * COL-08, STO-01〜STO-05: 1県分の取得結果を1つのバッチで保存する。
+ * syncedAt はその回の now で、first_seen_at / last_seen_at と、その県の prefecture_syncs.synced_at になる。
+ * events はすべて prefecture の県のものであること（呼び出し側で保証する）。
  */
-export async function commitSuccessfulRun(
+export async function commitPrefecture(
   db: D1Database,
-  run: { readonly startedAt: number; readonly finishedAt: number; readonly events: readonly HokurikuEvent[] },
+  input: { readonly prefecture: Prefecture; readonly syncedAt: number; readonly events: readonly HokurikuEvent[] },
 ): Promise<void> {
+  await db.batch([
+    db.prepare(UPSERT_EVENTS).bind(JSON.stringify(input.events.map(toJsonRow)), input.syncedAt),
+    db.prepare(UPSERT_SYNC).bind(input.prefecture, input.syncedAt),
+  ]);
+}
+
+/**
+ * COL-09, STO-06: 収集回を記録する。成功回（3県すべて保存できた回）のときは、あわせて古いデータを掃除する。
+ */
+export async function recordRun(db: D1Database, run: CollectionRun): Promise<void> {
+  const failureKind = run.status === "failure" ? run.failureKind : null;
+  const insert = db.prepare(INSERT_RUN).bind(run.startedAt, run.finishedAt, run.status, failureKind, run.fetchedCount);
+  if (run.status === "failure") {
+    await insert.run();
+    return;
+  }
   const cutoff = run.startedAt - RETENTION_MS;
   await db.batch([
-    db.prepare(UPSERT_EVENTS).bind(JSON.stringify(run.events.map(toJsonRow)), run.startedAt),
-    db.prepare(INSERT_RUN).bind(run.startedAt, run.finishedAt, "success", null, run.events.length),
+    insert,
     db.prepare("DELETE FROM events WHERE ended_at < ?1").bind(cutoff),
     db.prepare("DELETE FROM collection_runs WHERE finished_at < ?1").bind(cutoff),
     // 復旧通知をまだ送っていない停止の記録は残す。消すと30日を超える停止のあとに復旧通知が出ない（HLT-03）。
@@ -84,14 +109,6 @@ export async function commitSuccessfulRun(
       )
       .bind(cutoff),
   ]);
-}
-
-/** COL-09: 失敗回の記録。events には触れない（COL-08）。 */
-export async function recordFailedRun(
-  db: D1Database,
-  run: Extract<CollectionRun, { status: "failure" }>,
-): Promise<void> {
-  await db.prepare(INSERT_RUN).bind(run.startedAt, run.finishedAt, "failure", run.failureKind, run.fetchedCount).run();
 }
 
 export interface HealthFacts {

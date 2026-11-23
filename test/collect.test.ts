@@ -29,19 +29,45 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("COL-08: 全か無か", () => {
-  it("2県目で失敗したら、1県目の分も保存しない", async () => {
+describe("COL-08 / COL-07: 県ごとに保存し、失敗したらその回はそこで止める", () => {
+  it("2県目で失敗しても1県目の分は保存し、3県目は取りに行かない", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-    const run = await collect(NOW, [page(connpassEvent({ id: 1 })), new Response("x", { status: 500 })]);
-    expect(run).toMatchObject({ status: "failure", failureKind: "http_error", fetchedCount: 1 });
-    expect(await allRows("SELECT * FROM events")).toEqual([]);
+    const deps = {
+      ...fakeConnpassDeps([page(connpassEvent({ id: 1 })), new Response("x", { status: 429 })], NOW),
+      db: env.DB,
+    };
+    const run = await runCollection(deps, NOW);
+
+    expect(run).toMatchObject({ status: "failure", failureKind: "rate_limited", fetchedCount: 1 });
+    expect(deps.requests.map((r) => r.url.searchParams.get("prefecture"))).toEqual(["fukui", "ishikawa"]);
+    expect(await allRows("SELECT source_event_id, prefecture FROM events")).toEqual([
+      { source_event_id: "1", prefecture: "fukui" },
+    ]);
+    expect(await allRows("SELECT prefecture, synced_at FROM prefecture_syncs")).toEqual([
+      { prefecture: "fukui", synced_at: NOW },
+    ]);
+    const snapshot = await readSnapshot(env.DB, NOW);
+    expect(snapshot.events.map((e) => e.sourceEventId)).toEqual(["1"]);
+    expect(snapshot.lastSuccessFinishedAt).toBeNull();
   });
 
-  it("D1 への書き込みに失敗したら storage_error として記録する", async () => {
+  it("3県とも保存できた回だけを成功として記録する", async () => {
+    const run = await collect(NOW, [page(connpassEvent()), page(), page(connpassEvent())]);
+    expect(run.status).toBe("success");
+    expect(await allRows("SELECT prefecture FROM prefecture_syncs ORDER BY prefecture")).toEqual([
+      { prefecture: "fukui" },
+      { prefecture: "ishikawa" },
+      { prefecture: "toyama" },
+    ]);
+  });
+
+  it("D1 への書き込みに失敗したら storage_error として記録し、残りの県は取りに行かない", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     await env.DB.exec("DROP TABLE events");
-    const run = await collect(NOW, [page(connpassEvent()), page(), page()]);
+    const deps = { ...fakeConnpassDeps([page(connpassEvent()), page(), page()], NOW), db: env.DB };
+    const run = await runCollection(deps, NOW);
     expect(run).toMatchObject({ status: "failure", failureKind: "storage_error" });
+    expect(deps.requests).toHaveLength(1);
     expect(await allRows("SELECT status, failure_kind FROM collection_runs")).toEqual([
       { status: "failure", failure_kind: "storage_error" },
     ]);
@@ -106,7 +132,21 @@ describe("STO-01 / STO-02 / STO-03 / STO-04: 一意性と更新", () => {
   });
 });
 
-describe("STO-05: 最新の成功回で取得できたイベントだけを出す", () => {
+describe("STO-05: その県を最後に取得できた時点で見えていたイベントだけを出す", () => {
+  it("ある県の取得に失敗した回のあとは、その県は前回取得できたときの内容を出す", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    await collect(NOW, [
+      page(connpassEvent({ id: 1 })),
+      page(connpassEvent({ id: 2 }), connpassEvent({ id: 3 })),
+      page(),
+    ]);
+    const later = NOW + 3 * HOUR;
+    await collect(later, [page(connpassEvent({ id: 4 })), new Response("x", { status: 429 })]);
+
+    const snapshot = await readSnapshot(env.DB, later);
+    expect(snapshot.events.map((e) => e.sourceEventId).toSorted()).toEqual(["2", "3", "4"]);
+  });
+
   it("取得できなくなったイベントは行を残すが、一覧の材料に含めない", async () => {
     await collect(NOW, [page(connpassEvent({ id: 1 }), connpassEvent({ id: 2 })), page(), page()]);
     const later = NOW + HOUR;

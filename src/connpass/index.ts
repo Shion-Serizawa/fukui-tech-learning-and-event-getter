@@ -4,7 +4,8 @@ export {
   REQUEST_INTERVAL_MS,
   REQUEST_TIMEOUT_MS,
   USER_AGENT,
-  fetchHokurikuEvents,
+  openConnpassSession,
   type ConnpassDeps,
-  type FetchResult,
+  type ConnpassSession,
+  type PrefectureResult,
 } from "./client.ts";
