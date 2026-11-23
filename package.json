@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "npm run typecheck && npm run lint && npm run fmt:check && npm run test:coverage && npm run spec:check",
+    "check": "npm run typecheck && npm run lint && npm run fmt:check && npm run test:coverage && npm run spec:check -- --strict",
     "typecheck": "tsc -p tsconfig.json && tsc -p web/tsconfig.json && tsc -p tools/tsconfig.json",
     "lint": "oxlint",
     "fmt": "oxfmt",

@@ -1,0 +1,52 @@
+# main に入ったら本番へデプロイする（team.md「Deployment」Q7=B）。pull_request では動かない。
+# Cloudflare の API トークンは、実際にデプロイするステップにだけ渡す。npm ci やテストのステップには渡さない
+# （依存パッケージのスクリプトからトークンを読まれる経路を作らないため）。
+name: deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: 本番デプロイ
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WRANGLER_SEND_METRICS: "false"
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@236a21c3b91f5db6d4e174b348674a0f0caac06d # v5.2.9
+      - run: npm ci
+      - name: 検査（デプロイ前にもう一度）
+        run: npm run check
+
+      # スキーマ変更は列の追加のみ（docs/spec/04-data.md）なので、コードより先に適用してよい
+      - name: D1 マイグレーション
+        run: node_modules/.bin/wrangler d1 migrations apply hokuriku-it-events --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Worker（収集）
+        run: node_modules/.bin/wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Pages（公開一覧・RSS）
+        run: node_modules/.bin/wrangler pages deploy --cwd web --branch main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: デプロイ後の確認
+        run: |
+          curl -fsS "${{ vars.PUBLIC_SITE_URL }}/" | grep -q '最終収集'
+          curl -fsS "${{ vars.PUBLIC_SITE_URL }}/feed.xml" | grep -q '<rss version="2.0">'

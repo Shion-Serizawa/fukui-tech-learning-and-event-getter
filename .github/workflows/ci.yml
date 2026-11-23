@@ -34,7 +34,7 @@ jobs:
       - run: npm run fmt:check
       - run: npm run types:check
       - run: npm run test:coverage
-      - run: npm run spec:check
+      - run: npm run spec:check -- --strict
       - run: npm run build:check
 
   gitleaks:
