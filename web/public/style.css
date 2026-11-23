@@ -1,4 +1,250 @@
-/* 配色・字形・余白の具体値は WEB 実装時に決める（wireframes「見た目の方針」）。 */
+/*
+ * 公開一覧（W-01）の見た目。方針は docs/spec/03-behavior.md「見た目」。
+ * - 一覧として目で追いやすいことを優先し、1件が縦に伸びすぎないようにする
+ * - 県名バッジと「終了」は色だけでなく文字でも区別する（色はあくまで補助）
+ * - 外部のフォントや画像は使わない（CSP を 'self' のまま保つ）
+ */
+
 :root {
   color-scheme: light dark;
+
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1c2026;
+  --muted: #5b6472;
+  --border: #dde1e7;
+  --link: #1f5fbf;
+  --focus: #1f5fbf;
+
+  --fukui: #0b6e4f;
+  --fukui-bg: #e3f4ec;
+  --ishikawa: #8a3b12;
+  --ishikawa-bg: #fbeadf;
+  --toyama: #1d4f91;
+  --toyama-bg: #e3edfa;
+  --ended: #5b6472;
+  --ended-bg: #eceef2;
+
+  --radius: 10px;
+  --gap: 0.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171c;
+    --surface: #1d2128;
+    --text: #e6e9ee;
+    --muted: #a3acb9;
+    --border: #2f3540;
+    --link: #8ab4ff;
+    --focus: #8ab4ff;
+
+    --fukui: #7fd8b3;
+    --fukui-bg: #183a2e;
+    --ishikawa: #f2b38c;
+    --ishikawa-bg: #45281a;
+    --toyama: #9cc0f2;
+    --toyama-bg: #1d3150;
+    --ended: #a3acb9;
+    --ended-bg: #2a2f38;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+header,
+main,
+footer {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+header {
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.3;
+}
+
+header p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+}
+
+main > p {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  text-align: center;
+}
+
+section {
+  margin: 1.5rem 0 2rem;
+}
+
+section h2 {
+  margin: 0 0 var(--gap);
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--border);
+  font-size: 1.2rem;
+}
+
+section > p {
+  margin: 0;
+  color: var(--muted);
+}
+
+a {
+  color: var(--link);
+}
+
+a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* イベントカード */
+
+.event {
+  margin: 0 0 var(--gap);
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.event h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.event h3 a {
+  text-decoration: none;
+}
+
+.event h3 a:hover {
+  text-decoration: underline;
+}
+
+.event p {
+  margin: 0;
+}
+
+.event__when {
+  font-variant-numeric: tabular-nums;
+}
+
+.event__where {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.event .event__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.event__hashtag {
+  overflow-wrap: anywhere;
+}
+
+/* 終了したイベントは控えめにする（「終了」の文字でも区別する） */
+
+.event--ended {
+  background: transparent;
+}
+
+.event--ended h3,
+.event--ended .event__when {
+  color: var(--muted);
+}
+
+/* バッジ */
+
+.tag {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.tag--fukui {
+  color: var(--fukui);
+  background: var(--fukui-bg);
+}
+
+.tag--ishikawa {
+  color: var(--ishikawa);
+  background: var(--ishikawa-bg);
+}
+
+.tag--toyama {
+  color: var(--toyama);
+  background: var(--toyama-bg);
+}
+
+.tag--ended {
+  margin-left: 0.25rem;
+  color: var(--ended);
+  background: var(--ended-bg);
+  vertical-align: 0.1em;
+}
+
+footer {
+  padding-top: 1rem;
+  padding-bottom: 2.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+footer p {
+  margin: 0.25rem 0;
+}
+
+@media (max-width: 30rem) {
+  header {
+    padding-top: 1.25rem;
+  }
+
+  header h1 {
+    font-size: 1.45rem;
+  }
+
+  .event {
+    padding: 0.65rem 0.8rem;
+  }
 }

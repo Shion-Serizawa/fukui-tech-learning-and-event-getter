@@ -19,7 +19,7 @@ function card(event: StoredEvent, ended: boolean): Markup {
 <h3><a href="${event.url}">${event.title}</a></h3>
 <p class="event__when">${formatEventPeriod(event.startedAt, event.endedAt)}${ended ? html` <span class="tag tag--ended">終了</span>` : null}</p>
 ${place === null ? null : html`<p class="event__where">${place}</p>`}
-<p class="event__meta"><span class="tag tag--pref">${PREFECTURE_LABEL[event.prefecture]}</span> <span>${participantsLabel(event)}</span>${event.hashTag === null ? null : html` <span>#${event.hashTag}</span>`}</p>
+<p class="event__meta"><span class="tag tag--pref tag--${event.prefecture}">${PREFECTURE_LABEL[event.prefecture]}</span> <span>${participantsLabel(event)}</span>${event.hashTag === null ? null : html` <span class="event__hashtag">#${event.hashTag}</span>`}</p>
 </article>`;
 }
 
