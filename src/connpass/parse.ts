@@ -70,7 +70,7 @@ function parseEvent(raw: unknown, prefecture: Prefecture): ParsedEvent | undefin
 
   const id = nonNegativeInt(raw["id"]);
   const title = optionalText(raw["title"]);
-  const url = connpassUrl(raw["event_url"]);
+  const url = connpassUrl(raw["url"]);
   const startedAt = instant(raw["started_at"]);
   const endedAt = instant(raw["ended_at"]);
   const accepted = nonNegativeInt(raw["accepted"]);

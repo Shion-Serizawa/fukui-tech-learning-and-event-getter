@@ -18,6 +18,7 @@
     {
       "binding": "DB",
       "database_name": "hokuriku-it-events",
+      "database_id": "f3f7e044-a831-470c-b2f4-5654aa3c84ef",
       "migrations_dir": "migrations",
     },
   ],

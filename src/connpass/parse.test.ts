@@ -24,7 +24,7 @@ describe("COL-11: レスポンスの実行時検証", () => {
     ]);
   });
 
-  const requiredFields = ["id", "title", "event_url", "started_at", "ended_at", "accepted"];
+  const requiredFields = ["id", "title", "url", "started_at", "ended_at", "accepted"];
   for (const field of requiredFields) {
     it(`必須フィールド ${field} が欠けたら null（その回は invalid_response）`, () => {
       const raw = connpassEvent();

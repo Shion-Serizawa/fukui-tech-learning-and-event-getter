@@ -1,6 +1,6 @@
 /**
  * 手で書いたフィクスチャ（project.md: 実レスポンスをコミットしない）。
- * 形は [S6]（go-connpass のモデル定義）に基づく推定。実レスポンスとの突き合わせは V-01。
+ * 形は 2026-11-23 に実レスポンスと突き合わせた（V-01）。値はすべて作り物。
  * 主催者名のフィールドは「変換で捨てられること」を確かめるためだけに入れている（値は作り物）。
  */
 
@@ -16,8 +16,8 @@ export function connpassEvent(overrides: Readonly<Record<string, unknown>> = {})
     title: `福井 IT 勉強会 #${id}`,
     catch: "キャッチコピー",
     description: "<p>概要（保存しない）</p>",
-    event_url: `https://fukui-dev.connpass.com/event/${id}/`,
-    image_url: "",
+    url: `https://fukui-dev.connpass.com/event/${id}/`,
+    image_url: null,
     hash_tag: "fukuidev",
     started_at: "2026-12-05T13:00:00+09:00",
     ended_at: "2026-12-05T17:00:00+09:00",
@@ -34,6 +34,7 @@ export function connpassEvent(overrides: Readonly<Record<string, unknown>> = {})
     owner_display_name: FIXTURE_OWNER_NAME,
     accepted: 25,
     waiting: 0,
+    published_at: "2026-11-01T09:00:00+09:00",
     updated_at: "2026-11-20T10:00:00+09:00",
     ...overrides,
   };

@@ -137,7 +137,7 @@ describe("COL-07: 失敗の分類", () => {
 
   it("必須フィールドが欠けたイベントを含むページは invalid_response", async () => {
     const broken = connpassEvent();
-    delete broken["event_url"];
+    delete broken["url"];
     const deps = fakeConnpassDeps([jsonResponse(connpassPage([broken]))], NOW);
     expect(await fetchHokurikuEvents(deps, NOW)).toMatchObject({ ok: false, kind: "invalid_response" });
   });

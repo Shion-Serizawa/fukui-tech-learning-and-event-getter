@@ -67,12 +67,13 @@ Cloudflare の API トークンは手順 2〜4 のステップにだけ渡す。
 
 ### 初回だけ手で行うこと（Cloudflare・Discord・GitHub）
 
-- [ ] D1 を作る: `wrangler d1 create hokuriku-it-events`。表示された `database_id` を `wrangler.jsonc` と `web/wrangler.jsonc` の `d1_databases` に書く（ID はシークレットではない）
-- [ ] Pages のプロジェクトを作る: `wrangler pages project create hokuriku-it-events --production-branch main`
+- [x] D1 を作る（2026-11-23、置き場所の目安 `apac`）。`database_id` は `wrangler.jsonc` と `web/wrangler.jsonc` に記入済み（ID はシークレットではない）。マイグレーションは初回デプロイで適用される
+- [x] Pages のプロジェクトを作る（2026-11-23、直接アップロード方式、本番ブランチ `main`、`https://hokuriku-it-events.pages.dev`）
 - [ ] Worker のシークレットを入れる: `wrangler secret put CONNPASS_API_KEY`、`wrangler secret put DISCORD_WEBHOOK_URL`
 - [ ] Discord で通知先チャンネルの Webhook を作る（本人だけが見るチャンネル）
 - [ ] Cloudflare のスコープ付き API トークンを作る（Workers Scripts:Edit / D1:Edit / Cloudflare Pages:Edit、対象アカウントのみ）。**Global API Key は使わない**
 - [ ] GitHub の Environment `production` に、シークレット `CLOUDFLARE_API_TOKEN`、変数 `CLOUDFLARE_ACCOUNT_ID` と `PUBLIC_SITE_URL`（例: `https://hokuriku-it-events.pages.dev`）を入れる
+- [ ] Environment `production` の Deployment branches を `main` だけに限定する（ほかのブランチのワークフローからトークンを使わせない）
 
 ### デプロイ後の確認
 
@@ -87,6 +88,20 @@ Cloudflare の API トークンは手順 2〜4 のステップにだけ渡す。
 | Worker | `wrangler rollback`（直前のデプロイへ戻す）                                            |
 | Pages  | ダッシュボードから以前のデプロイを再公開する                                           |
 | D1     | スキーマ変更は列の追加のみ（04-data.md）なので、コードだけ戻せばよい。データは戻さない |
+
+## アカウントの保険（課金とセキュリティ）
+
+**課金されない理由は「Workers Free プランのまま使う」ことにある。** Free プランの上限は打ち切り型で、超えると Worker はエラー（1027）、D1 はクエリが失敗するだけで、請求は発生しない（D1 は上限到達時にメールが届く）。Workers Paid（月 $5〜）に上げたときだけ従量課金が始まる。
+
+| 設定                                           | 状態                       | 備考                                                                                                              |
+| ---------------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 予算アラート（従量課金が $1 を超えたらメール） | 設定済み（2026-11-23）     | 通知のみ。Free のままなら発火しない。発火したら何かが有料になっている                                             |
+| 不正利用（abuse）通報のメール通知              | 設定済み（2026-11-23）     | —                                                                                                                 |
+| Workers Paid にしない・支払い方法を登録しない  | 運用ルール                 | 上げる場合は先に Workers の spending limit（支出上限）を設定する                                                  |
+| ログインの二要素認証                           | 設定済み（2026-11-23）     | ダッシュボードの My Profile → Authentication。アカウントを乗っ取られると、Worker の書き換えや有料化ができてしまう |
+| Pages のデプロイ失敗の通知                     | 設定済み（2026-11-23）     | 通知の種類 `pages_event_alert`                                                                                    |
+| デプロイ用 API トークンの有効期限              | トークン発行時に設定       | 1年程度を目安に期限を付け、切れる前に作り直す                                                                     |
+| Claude の MCP 接続（OAuth）の権限              | 初期設定が終わったら見直す | My Profile から接続済みアプリの権限を確認し、不要なら取り消す                                                     |
 
 ## 無料枠の見積もり（C-09）
 
@@ -122,6 +137,18 @@ curl -sS -H "X-API-Key: $CONNPASS_API_KEY" \
 | V-05 | `start` が1始まりか、`results_available` の意味（全件数か）                                          | COL-04 を直す                                                                             |
 | V-06 | 北陸3県で実際に何件返るか。都道府県の設定漏れでの取りこぼしがどの程度か（A-05）                      | 許容範囲を超えるなら、取りこぼしの補正を別途検討する（D-11）                              |
 | V-07 | API 利用申請で申告した利用目的に、公開の RSS が含まれるか（R-07、C-07）                              | 含まれなければ connpass に利用目的の追加を届け出るか、RSS を公開しない形に戻す            |
+
+### 確認結果（2026-11-23、福井・7か月分を1回取得）
+
+| ID   | 結果                                                                                                                                                                        |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| V-01 | URL のフィールド名は `event_url` ではなく `url` だった（修正済み）。ほかは 04-data.md の表どおり。`limit` と `image_url` は null を取りうる。使わない `published_at` がある |
+| V-02 | 応答ヘッダにレート制限の情報はない。公式の値は未確認のまま、1100ms 間隔を保つ                                                                                               |
+| V-03 | カンマ区切りの `ym` は効く（10月・11月・翌1月のイベントが返った）                                                                                                           |
+| V-04 | 返った8件はすべて住所に「福井」を含む                                                                                                                                       |
+| V-05 | `results_start` は 1 始まり。今回は1ページに収まった                                                                                                                        |
+| V-06 | 福井は7か月で8件。石川・富山は初回の収集で確認する                                                                                                                          |
+| V-07 | 未確認（本人が申請内容を確認する）                                                                                                                                          |
 
 確認が済んだら、フィクスチャを実データの形に合わせて**手で**書き直す（実レスポンスをそのままコミットしない）。
 
