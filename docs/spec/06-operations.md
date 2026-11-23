@@ -32,14 +32,23 @@ npm run check                # 型・lint・整形・テスト（カバレッジ
 
 `wrangler.jsonc` の `vars` は平文の設定であってシークレットではない。シークレットを `vars` に書かない。
 
-## リポジトリの初期設定（手作業）
+## リポジトリの設定（GitHub）
 
-ひとしきりのセットアップが終わった時点で GitHub の公開リポジトリを作り、次を設定する（team.md「Way of Working」）。
+公開リポジトリ: https://github.com/Shion-Serizawa/fukui-tech-learning-and-event-getter 。2026-11-23 に `gh api` で次を設定した。
 
-- [ ] `main` のブランチ保護: PR 必須、ステータスチェック必須（`型・リント・整形・テスト・ビルド`、`シークレット検出`）、承認者は不要
-- [ ] シークレットスキャンとプッシュ保護を有効にする
-- [ ] Dependabot を有効にする（設定は `.github/dependabot.yml`）
-- [ ] CodeQL を有効にしてよい（表示のみ。ゲートにしない）
+| 区分                                         | 設定                                                                                                                                                                                                                                                                                         |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `main` の保護（ルールセット「main の保護」） | PR 必須（承認者は不要。単独開発のためゲートは人ではなく CI）、必須チェック `型・リント・整形・テスト・ビルド` と `シークレット検出`（GitHub Actions が出したものに限る）、削除と force push の禁止、履歴を直線に保つ、レビューのスレッドは解決してからマージ。例外を許す人（bypass）はいない |
+| マージの方法                                 | squash のみ（1 PR = `main` の1コミット）。マージ後にブランチを自動で消す。自動マージを許可                                                                                                                                                                                                   |
+| シークレット                                 | シークレットスキャンとプッシュ保護を有効。汎用パターンの検出と有効性の確認は、個人の公開リポジトリでは使えない（有料機能）                                                                                                                                                                   |
+| 依存関係                                     | Dependabot の脆弱性アラートとセキュリティ更新を有効。定期の更新は `.github/dependabot.yml`（週次・7日の待機）                                                                                                                                                                                |
+| コードの解析                                 | CodeQL（default setup）を有効。表示のみで、マージの条件にはしない                                                                                                                                                                                                                            |
+| 脆弱性の報告                                 | 非公開の脆弱性報告（Private vulnerability reporting）を有効                                                                                                                                                                                                                                  |
+| Actions                                      | `GITHUB_TOKEN` は既定で読み取り専用、PR の承認は不可。使える Action は GitHub 製と `jdx/mise-action` だけで、コミット SHA での固定を必須。外部の人の PR はワークフローを承認してから動かす                                                                                                   |
+| `production` 環境                            | `main` ブランチからしか使えない。変数 `CLOUDFLARE_ACCOUNT_ID`、`PUBLIC_SITE_URL` を設定済み。シークレット `CLOUDFLARE_API_TOKEN` は本人が入れる                                                                                                                                              |
+| その他                                       | Wiki と Projects は無効                                                                                                                                                                                                                                                                      |
+
+**`main` に直接 push できない。** 変更は作業ブランチで行い、PR を作って CI が通ったら squash でマージする。
 
 ## CI
 
@@ -72,8 +81,8 @@ Cloudflare の API トークンは手順 2〜4 のステップにだけ渡す。
 - [ ] Worker のシークレットを入れる: `wrangler secret put CONNPASS_API_KEY`、`wrangler secret put DISCORD_WEBHOOK_URL`
 - [ ] Discord で通知先チャンネルの Webhook を作る（本人だけが見るチャンネル）
 - [ ] Cloudflare のスコープ付き API トークンを作る（Workers Scripts:Edit / D1:Edit / Cloudflare Pages:Edit、対象アカウントのみ）。**Global API Key は使わない**
-- [ ] GitHub の Environment `production` に、シークレット `CLOUDFLARE_API_TOKEN`、変数 `CLOUDFLARE_ACCOUNT_ID` と `PUBLIC_SITE_URL`（例: `https://hokuriku-it-events.pages.dev`）を入れる
-- [ ] Environment `production` の Deployment branches を `main` だけに限定する（ほかのブランチのワークフローからトークンを使わせない）
+- [ ] GitHub の Environment `production` にシークレット `CLOUDFLARE_API_TOKEN` を入れる（変数 `CLOUDFLARE_ACCOUNT_ID` と `PUBLIC_SITE_URL` は設定済み）
+- [x] Environment `production` の Deployment branches を `main` だけに限定する（ほかのブランチのワークフローからトークンを使わせない）
 
 ### デプロイ後の確認
 
