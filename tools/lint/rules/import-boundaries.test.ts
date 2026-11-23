@@ -10,7 +10,8 @@ tester.run("import-boundaries", importBoundaries, {
       filename: at("src/collector/collect.test.ts"),
     },
     { code: "import type { EventDto } from './dto.ts';", filename: at("src/connpass/parse.ts") },
-    { code: "import { listEvents } from '../../src/db/events.ts';", filename: at("web/functions/index.ts") },
+    { code: "import { readSnapshot } from '../../src/db/read.ts';", filename: at("web/functions/index.ts") },
+    { code: "import { commitSuccessfulRun } from '../db/write.ts';", filename: at("src/collector/collect.ts") },
     { code: "import { renderPage } from '../../src/web/render.ts';", filename: at("web/functions/index.ts") },
     { code: "import { renderFeed } from '../../src/feed/rss.ts';", filename: at("web/functions/feed.xml.ts") },
     { code: "import { notifyStale } from '../notify/discord.ts';", filename: at("src/collector/health.ts") },
@@ -50,6 +51,11 @@ tester.run("import-boundaries", importBoundaries, {
       code: "import { notifyStale } from '../../src/notify/discord.ts';",
       filename: at("web/functions/index.ts"),
       errors: [{ messageId: "layer" }],
+    },
+    {
+      code: "import { commitSuccessfulRun } from '../../src/db/write.ts';",
+      filename: at("web/functions/index.ts"),
+      errors: [{ messageId: "entry" }],
     },
     { code: "import { z } from 'zod';", filename: at("src/domain/event.ts"), errors: [{ messageId: "pure" }] },
     {

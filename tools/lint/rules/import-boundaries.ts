@@ -65,6 +65,11 @@ const PUBLIC_ENTRY: Partial<Record<Layer, readonly string[]>> = {
   connpass: ["src/connpass/index.ts"],
 };
 
+/** 特定の層からだけ、入口をさらに絞る。公開面（Pages）は D1 への書き込み関数を import できない。 */
+const RESTRICTED_ENTRY: Partial<Record<Layer, Partial<Record<Layer, readonly string[]>>>> = {
+  "pages-entry": { db: ["src/db/read.ts", "src/db/rows.ts"] },
+};
+
 function layerOf(file: string): Layer | undefined {
   for (const [prefix, layer] of LAYERS) {
     if (prefix.endsWith("/") ? file.startsWith(prefix) : file === prefix) return layer;
@@ -118,7 +123,7 @@ export const importBoundaries: Rule = {
         });
         return;
       }
-      const entries = PUBLIC_ENTRY[to];
+      const entries = RESTRICTED_ENTRY[from]?.[to] ?? PUBLIC_ENTRY[to];
       if (entries !== undefined && !entries.includes(target)) {
         context.report({ node, messageId: "entry", data: { to, entry: entries.join(", ") } });
       }

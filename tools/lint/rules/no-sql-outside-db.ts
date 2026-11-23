@@ -1,4 +1,4 @@
-import { type Rule, repoPath } from "../shared.ts";
+import { type Rule, isTestFile, repoPath } from "../shared.ts";
 
 const SQL_METHODS = new Set(["prepare", "batch"]);
 
@@ -14,7 +14,8 @@ export const noSqlOutsideDb: Rule = {
   },
   create(context) {
     const file = repoPath(context.filename);
-    if (file.startsWith("src/db/")) return {};
+    // テストは D1 の状態を直接確かめてよい（本番コードの制約ではない）。
+    if (file.startsWith("src/db/") || isTestFile(file)) return {};
     return {
       CallExpression(node) {
         const callee = node.callee;
