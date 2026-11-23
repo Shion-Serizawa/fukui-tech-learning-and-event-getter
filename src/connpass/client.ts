@@ -6,6 +6,11 @@ import { parseEventsPage } from "./parse.ts";
 
 /** COL-06: 送り先はここだけ。 */
 export const CONNPASS_EVENTS_ENDPOINT = "https://connpass.com/api/v2/events/";
+/**
+ * COL-06: connpass は User-Agent のないリクエストに 403 を返す（2026-11-24 に確認）。
+ * Workers の fetch は User-Agent を付けないので、明示する。連絡先として公開ページの URL を入れる。
+ */
+export const USER_AGENT = "hokuriku-it-events/1.0 (+https://hokuriku-it-events.pages.dev)";
 /** COL-04 */
 export const PAGE_SIZE = 100;
 export const MAX_PAGES_PER_PREFECTURE = 10;
@@ -54,7 +59,7 @@ async function requestPage(
   try {
     res = await deps.fetch(buildUrl(prefecture, months, start), {
       method: "GET",
-      headers: { "X-API-Key": deps.apiKey, Accept: "application/json" },
+      headers: { "X-API-Key": deps.apiKey, Accept: "application/json", "User-Agent": USER_AGENT },
       signal: deps.timeoutSignal(REQUEST_TIMEOUT_MS),
     });
   } catch {

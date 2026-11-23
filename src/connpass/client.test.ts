@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NOW, fakeConnpassDeps, jsonResponse, parseLogLine } from "../../test/fakes.ts";
 import { FIXTURE_OWNER_NAME, connpassEvent, connpassPage } from "./fixtures/events.ts";
-import { CONNPASS_EVENTS_ENDPOINT, REQUEST_INTERVAL_MS, REQUEST_TIMEOUT_MS, fetchHokurikuEvents } from "./index.ts";
+import {
+  CONNPASS_EVENTS_ENDPOINT,
+  REQUEST_INTERVAL_MS,
+  REQUEST_TIMEOUT_MS,
+  USER_AGENT,
+  fetchHokurikuEvents,
+} from "./index.ts";
 
 const empty = (): Response => jsonResponse(connpassPage([]));
 const threeEmpty = (): Response[] => [empty(), empty(), empty()];
@@ -53,6 +59,7 @@ describe("COL-03 / COL-06: 送り先とパラメータ", () => {
       expect(url.searchParams.get("start")).toBe("1");
       expect(url.searchParams.has("api_key")).toBe(false);
       expect(new Headers(init.headers).get("X-API-Key")).toBe("test-connpass-api-key");
+      expect(new Headers(init.headers).get("User-Agent")).toBe(USER_AGENT);
       expect(init.method).toBe("GET");
     }
   });
