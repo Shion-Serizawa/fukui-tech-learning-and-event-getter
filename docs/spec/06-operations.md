@@ -6,18 +6,40 @@
 
 ## ローカル開発
 
+### 準備（初回だけ）
+
 ```sh
-mise install                 # Node（mise.toml で固定）
+mise install                       # Node（mise.toml で固定）
 npm ci
-cp .dev.vars.example .dev.vars   # 値を入れる。コミットしない
-npm run db:migrate:local
-npm run dev                  # Worker。--test-scheduled 付き
-#   別端末で: curl "http://localhost:8787/__scheduled?cron=17+*+*+*+*"  → 収集を1回起動
-npm run dev:web              # Pages（公開一覧）
-npm run check                # 型・lint・整形・テスト（カバレッジ込み）・仕様との対応
+cp .dev.vars.example .dev.vars     # 値を入れる。コミットしない
+npm run db:migrate:local           # 手元の D1（.wrangler/state）にテーブルを作る
 ```
 
-ローカルで `npm run dev` を起動し `/__scheduled` を叩くと、`.dev.vars` のキーで**本物の connpass API を呼ぶ**（1回の収集で数リクエスト、1100ms 間隔）。何度も連打しない。日常の確認は自動テスト（偽の fetch + フィクスチャ。外部通信は遮断されている）で行う。
+### 収集から公開ページまでを手元で動かす
+
+端末を2つ使う。Worker と web（Pages）は**同じ手元の D1**（`.wrangler/state`）を読み書きする。
+
+```sh
+# 端末1: Worker（収集）。http://localhost:8787 は 404 しか返さない（本番と同じ）
+npm run dev
+
+# 端末2: web（公開一覧と RSS）
+npm run dev:web
+#   → ブラウザで http://localhost:8788/ と http://localhost:8788/feed.xml を開く
+
+# 端末2（または3）: 収集を1回起動する
+npm run collect:local
+#   → 端末1に {"event":"connpass.request",...} のログが出る。数秒後に web を再読み込みすると一覧に出る
+```
+
+- `npm run collect:local` は `.dev.vars` のキーで**本物の connpass API を呼ぶ**（1回の収集で3県分、数リクエスト、1100ms 間隔）。何度も連打しない。日常の確認は自動テスト（偽の fetch + フィクスチャ。外部通信は遮断されている）で行う
+- `.dev.vars` に `DISCORD_WEBHOOK_URL` が入っていると、手元でも停止通知・復旧通知が本物の Discord に送られる。手元で収集が一度も成功していない状態（停止中）で起動すると、停止通知が1通届く。避けたいときは手元ではその行を空にする
+- 手元のデータを消したいときは `.wrangler/state` を消して、`npm run db:migrate:local` からやり直す
+- `npm run check` は型・lint・整形・テスト（カバレッジ込み）・仕様との対応をまとめて検査する。PR を出す前に通す
+
+### 本番の Cron を手で動かすことはできない
+
+本番には手動で起動する手段がない。Cron の時刻を一時的にずらす方法は、**Cron の変更が反映されるまで最大15分かかり、その間の起動は飛ばされる**ため使えない（2026-11-23 に試して確認）。手で確かめたいときは上の手順で手元で動かす。
 
 ## シークレット
 
