@@ -84,3 +84,13 @@ aidlc/diagnostics/
 # aidlc/spaces/*/intents/*/<phase>/<stage>/*.md (artifacts + diary).
 .claude/settings.local.json
 # END AI-DLC:gitignore
+
+# --- アプリケーション ---
+# ローカルの実シークレット（C-03）。wrangler dev が平文で置く
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.wrangler/
+coverage/
+# mise / npm のプロジェクトローカルなキャッシュ（サンドボックス環境用）
+.cache/

@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "embeddedLanguageFormatting": "off",
+  "ignorePatterns": [
+    "aidlc/**",
+    ".claude/**",
+    "poteto/**",
+    "worker-configuration.d.ts",
+    "web/worker-configuration.d.ts",
+    "package-lock.json",
+    ".mcp.json"
+  ]
+}

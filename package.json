@@ -1,0 +1,41 @@
+{
+  "name": "hokuriku-it-events",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "npm run typecheck && npm run lint && npm run fmt:check && npm run test:coverage && npm run spec:check",
+    "typecheck": "tsc -p tsconfig.json && tsc -p web/tsconfig.json && tsc -p tools/tsconfig.json",
+    "lint": "oxlint",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "spec:check": "node tools/spec-check.ts",
+    "types": "wrangler types --env-file .dev.vars.example && wrangler types --cwd web",
+    "types:check": "wrangler types --check --env-file .dev.vars.example && wrangler types --check --cwd web",
+    "build:check": "wrangler deploy --dry-run --outdir .wrangler/dry-run && wrangler pages functions build --cwd web --outdir ../.wrangler/pages-dry-run",
+    "dev": "wrangler dev --test-scheduled",
+    "dev:web": "wrangler pages dev --cwd web",
+    "db:migrate:local": "wrangler d1 migrations apply hokuriku-it-events --local"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "1.8.3",
+    "@types/node": "24.19.2",
+    "@vitest/coverage-istanbul": "5.1.0",
+    "oxfmt": "0.79.0",
+    "oxlint": "1.94.0",
+    "oxlint-tsgolint": "7.0.2007",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0",
+    "wrangler": "4.163.0"
+  },
+  "engines": {
+    "node": ">=24.22.0"
+  },
+  "allowScripts": {
+    "workerd@1.20260815.1": true,
+    "workerd@1.20261116.1": true,
+    "esbuild@0.28.1": true,
+    "esbuild@0.28.2": true
+  }
+}
