@@ -1,25 +1,32 @@
-import { html, toText } from "../../src/markup/markup.ts";
+import { readSnapshot } from "../../src/db/read.ts";
+import { buildListing } from "../../src/domain/listing.ts";
+import { logError } from "../../src/log.ts";
+import { renderPage } from "../../src/web/render.ts";
 
 /**
- * Pages Functions のエントリポイント（W-01 公開イベント一覧）。
- * 現在時刻と env を読んでよいのはここだけ。描画は src/web/ の純粋関数に任せる。
+ * GET /（F-01 公開一覧）。現在時刻と env を読んでよいのはエントリポイントだけ。
+ * D1 は読み取り専用のクエリ（src/db/read.ts）だけを使う。
  */
-export const onRequestGet: PagesFunction<Env> = () => {
-  // TODO(WEB-*): 一覧（docs/spec/03-behavior.md）を実装するまでは骨組みだけを返す。
-  const page = html`<!doctype html>
-    <html lang="ja">
-      <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>北陸ITイベント</title>
-        <link rel="stylesheet" href="/style.css" />
-      </head>
-      <body>
-        <header><h1>北陸ITイベント</h1></header>
-        <main><p>準備中です。</p></main>
-      </body>
-    </html>`;
-  return new Response(toText(page), {
-    headers: { "content-type": "text/html; charset=utf-8" },
+export async function respondPage(db: D1Database, now: number): Promise<Response> {
+  let body: string;
+  try {
+    const snapshot = await readSnapshot(db, now);
+    body = renderPage({
+      kind: "ok",
+      listing: buildListing(snapshot.events, now),
+      lastSuccessFinishedAt: snapshot.lastSuccessFinishedAt,
+    });
+  } catch {
+    // WEB-11: 「0件」と同じ見え方にしない。原因は画面に出さない。
+    logError("web.read_failed", { kind: "storage_error" });
+    return new Response(renderPage({ kind: "error" }), {
+      status: 503,
+      headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" },
+    });
+  }
+  return new Response(body, {
+    headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300" },
   });
-};
+}
+
+export const onRequestGet: PagesFunction<Env> = (context) => respondPage(context.env.DB, Date.now());
