@@ -53,9 +53,9 @@ describe("WEB-03 / WEB-05 / WEB-06 / WEB-07: イベントカード", () => {
     const { html } = await pageWith([hEvent("1", { title: "勉強会", url: "https://connpass.com/event/1/" })]);
     expect(html).toContain('<h3><a href="https://connpass.com/event/1/">勉強会</a></h3>');
     expect(html).toContain("福井市 ○○センター");
-    expect(html).toContain('<span class="tag tag--pref">福井</span>');
+    expect(html).toContain('<span class="tag tag--pref tag--fukui">福井</span>');
     expect(html).toContain("25 / 40 人");
-    expect(html).toContain("<span>#fukuidev</span>");
+    expect(html).toContain('<span class="event__hashtag">#fukuidev</span>');
   });
 
   it("場所が空なら住所、両方空なら場所の行を出さない", async () => {
