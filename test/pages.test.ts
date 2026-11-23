@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { commitSuccessfulRun } from "../src/db/write.ts";
+import { seedSuccessfulRun } from "./seed.ts";
 import type { HokurikuEvent } from "../src/domain/event.ts";
 import { SECURITY_HEADERS } from "../src/web/security-headers.ts";
 import { EMPTY_MESSAGE, ERROR_MESSAGE, FUKUI_EMPTY_MESSAGE } from "../src/web/render.ts";
@@ -12,7 +12,7 @@ import { resetDatabase } from "./reset-db.ts";
 const FINISHED = NOW - 10 * 60 * 1000;
 
 async function pageWith(events: readonly HokurikuEvent[], now = NOW): Promise<{ status: number; html: string }> {
-  await commitSuccessfulRun(env.DB, { startedAt: FINISHED - 5000, finishedAt: FINISHED, events });
+  await seedSuccessfulRun(env.DB, { startedAt: FINISHED - 5000, finishedAt: FINISHED, events });
   const res = await respondPage(env.DB, now);
   return { status: res.status, html: await res.text() };
 }

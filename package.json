@@ -17,7 +17,7 @@
     "dev": "wrangler dev --test-scheduled --port 8787",
     "dev:web": "wrangler pages dev --cwd web --persist-to ../.wrangler/state --port 8788",
     "db:migrate:local": "wrangler d1 migrations apply hokuriku-it-events --local",
-    "collect:local": "curl -sS \"http://localhost:8787/__scheduled?cron=17+*+*+*+*\""
+    "collect:local": "curl -sS \"http://localhost:8787/__scheduled?cron=17+*/3+*+*+*\""
   },
   "devDependencies": {
     "@cloudflare/vitest-plugin": "1.8.3",

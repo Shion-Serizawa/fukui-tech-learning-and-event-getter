@@ -14,7 +14,7 @@
 ## 全体の構成
 
 ```
-          Cron（毎時17分）
+          Cron（3時間ごと）
                  │
                  ▼
    ┌──────── Worker（src/worker.ts）── HTTP では何も公開しない ────────┐
@@ -70,7 +70,7 @@ Worker と Pages を分ける（Q8=B）。収集と通知は Worker、公開ペ�
 - 現在時刻（`now`）は入口で1度だけ取得する（`scheduled` は `controller.scheduledTime`、`fetch` / Pages は `Date.now()`）。以降は引数で渡す
 - `env` は入口のハンドラ引数で受け取り、必要な値だけを引数で渡す。モジュールのトップレベルでシークレットを読まない
 - 外への HTTP 呼び出しは `src/connpass/client.ts`（connpass）と `src/notify/discord.ts`（Discord）の中だけ。`fetch` 関数は入口から引数で注入する（テストでは偽物を渡す）
-- 待機（COL-05 の 1100ms）も引数で注入する。テストは実時間を待たない
+- 待機（COL-05 の 13秒）も引数で注入する。テストは実時間を待たない
 
 ## 規則と強制手段
 

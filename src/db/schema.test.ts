@@ -26,7 +26,7 @@ describe("D1 スキーマ（恒久的な回帰テスト）", () => {
       "first_seen_at",
       "last_seen_at",
     ]);
-    for (const table of ["events", "collection_runs", "notifications"]) {
+    for (const table of ["events", "collection_runs", "notifications", "prefecture_syncs"]) {
       expect((await columns(table)).filter((c) => c.includes("owner"))).toEqual([]);
     }
   });

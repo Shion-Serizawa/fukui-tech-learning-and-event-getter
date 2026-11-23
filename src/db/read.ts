@@ -8,7 +8,7 @@ import { EVENT_COLUMNS, type EventRow, readField, readNumber, toStoredEvent } fr
  */
 
 export interface Snapshot {
-  /** STO-05: 最新の成功回で取得できたイベントのうち、終了から14日以内のもの。 */
+  /** STO-05: その県を最後に取得できた時点で見えていたイベントのうち、終了から14日以内のもの。 */
   readonly events: readonly StoredEvent[];
   /** WEB-10: 最新の成功回の終了時刻。成功回がなければ null。 */
   readonly lastSuccessFinishedAt: number | null;
@@ -24,7 +24,7 @@ export async function readSnapshot(db: D1Database, now: number): Promise<Snapsho
     db
       .prepare(
         `SELECT ${EVENT_COLUMNS} FROM events
-         WHERE last_seen_at = (SELECT started_at FROM (${LATEST_SUCCESS}))
+         WHERE last_seen_at = (SELECT p.synced_at FROM prefecture_syncs AS p WHERE p.prefecture = events.prefecture)
            AND ended_at > ?1`,
       )
       .bind(now - RECENTLY_ENDED_MS),

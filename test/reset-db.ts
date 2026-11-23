@@ -7,7 +7,7 @@ import { env } from "cloudflare:workers";
  */
 export async function resetDatabase(db: D1Database): Promise<void> {
   await db.exec(
-    "DROP TABLE IF EXISTS events; DROP TABLE IF EXISTS collection_runs; DROP TABLE IF EXISTS notifications; DROP TABLE IF EXISTS d1_migrations;",
+    "DROP TABLE IF EXISTS events; DROP TABLE IF EXISTS collection_runs; DROP TABLE IF EXISTS notifications; DROP TABLE IF EXISTS prefecture_syncs; DROP TABLE IF EXISTS d1_migrations;",
   );
   await applyD1Migrations(db, env.TEST_MIGRATIONS);
 }

@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { commitSuccessfulRun } from "../src/db/write.ts";
+import { seedSuccessfulRun } from "./seed.ts";
 import type { HokurikuEvent } from "../src/domain/event.ts";
 import { SECURITY_HEADERS } from "../src/web/security-headers.ts";
 import { respondFeed } from "../web/functions/feed.xml.ts";
@@ -12,7 +12,7 @@ const SITE = "https://hokuriku-it-events.pages.dev";
 
 async function feedAfter(runs: readonly { at: number; events: readonly HokurikuEvent[] }[], now = NOW) {
   for (const run of runs) {
-    await commitSuccessfulRun(env.DB, { startedAt: run.at, finishedAt: run.at + 1000, events: run.events });
+    await seedSuccessfulRun(env.DB, { startedAt: run.at, finishedAt: run.at + 1000, events: run.events });
   }
   return respondFeed(env.DB, now, SITE);
 }
