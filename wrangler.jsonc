@@ -1,0 +1,27 @@
+// Worker: 収集（Cron）と停止の通知（Discord）。HTTP では何も公開しない。
+// 公開ページと RSS は web/（Pages）が担う（Q8=B）。
+// シークレット（CONNPASS_API_KEY, DISCORD_WEBHOOK_URL）は値をここに書かない。
+// 本番は `wrangler secret put`、ローカルは .dev.vars（.dev.vars.example 参照）。
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hokuriku-it-events-collector",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-11-01",
+  // 公開面を持たない（RSS-02, C-06）
+  "workers_dev": false,
+  "preview_urls": false,
+  "triggers": {
+    // 毎時17分（D-38: 1時間に1回。正時を避けて混雑を外す）
+    "crons": ["17 * * * *"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hokuriku-it-events",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+}

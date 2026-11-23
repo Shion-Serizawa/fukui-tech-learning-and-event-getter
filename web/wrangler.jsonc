@@ -1,0 +1,14 @@
+// Pages: 公開イベント一覧（GET /）と RSS（GET /feed.xml）。D1 は Worker と同じデータベースを読み取り専用の用途で使う。
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "hokuriku-it-events",
+  "pages_build_output_dir": "./public",
+  "compatibility_date": "2026-11-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hokuriku-it-events",
+      "migrations_dir": "../migrations",
+    },
+  ],
+}

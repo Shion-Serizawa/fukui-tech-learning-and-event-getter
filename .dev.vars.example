@@ -1,0 +1,4 @@
+# ローカル開発用。`cp .dev.vars.example .dev.vars` して値を入れる。.dev.vars はコミットしない（C-03）。
+CONNPASS_API_KEY=
+# 停止・復旧の通知先（HLT-05）。空ならローカルでは送らない
+DISCORD_WEBHOOK_URL=

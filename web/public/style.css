@@ -1,0 +1,4 @@
+/* 配色・字形・余白の具体値は WEB 実装時に決める（wireframes「見た目の方針」）。 */
+:root {
+  color-scheme: light dark;
+}
