@@ -2,6 +2,7 @@ import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { commitSuccessfulRun } from "../src/db/write.ts";
 import type { HokurikuEvent } from "../src/domain/event.ts";
+import { SECURITY_HEADERS } from "../src/web/security-headers.ts";
 import { EMPTY_MESSAGE, ERROR_MESSAGE, FUKUI_EMPTY_MESSAGE } from "../src/web/render.ts";
 import { respondPage } from "../web/functions/index.ts";
 import { DAY, HOUR, NOW } from "./fakes.ts";
@@ -180,5 +181,17 @@ describe("HLT-08: 公開ページには停止の警告を出さない", () => {
   it("最新の成功から3時間を超えていても警告の文言がない", async () => {
     const { html } = await pageWith([hEvent("1")], NOW + 5 * HOUR);
     expect(html).not.toMatch(/停止|警告/);
+  });
+});
+
+describe("WEB-15: Functions の応答にもセキュリティヘッダを付ける", () => {
+  it("一覧の通常時とエラー時", async () => {
+    const ok = await respondPage(env.DB, NOW);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    await env.DB.exec("DROP TABLE collection_runs");
+    const failed = await respondPage(env.DB, NOW);
+    for (const res of [ok, failed]) {
+      for (const [name, value] of Object.entries(SECURITY_HEADERS)) expect(res.headers.get(name)).toBe(value);
+    }
   });
 });

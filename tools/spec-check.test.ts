@@ -18,6 +18,16 @@ describe("spec-check", () => {
     ]);
   });
 
+  it("コメントや本文の文字列にある ID は数えない", () => {
+    const source = [
+      "// TODO HLT-09 を書く",
+      'const note = "COL-01";',
+      'describe("WEB-01: 期間", () => { expect(x).toBe("STO-02"); });',
+      "it.each([1])(`RSS-02: %s`, () => {});",
+    ].join("\n");
+    expect(referencedIds(source)).toEqual(new Set(["WEB-01", "RSS-02"]));
+  });
+
   it("テストのソースから要件 ID を拾う", () => {
     expect(referencedIds(`describe("WEB-08: 空状態", () => { it("RSS-01 と STO-05", ...) })`)).toEqual(
       new Set(["WEB-08", "RSS-01", "STO-05"]),

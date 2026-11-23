@@ -1,6 +1,7 @@
 import { readSnapshot } from "../../src/db/read.ts";
 import { buildListing } from "../../src/domain/listing.ts";
 import { logError } from "../../src/log.ts";
+import { withSecurityHeaders } from "../../src/web/security-headers.ts";
 import { renderPage } from "../../src/web/render.ts";
 
 /**
@@ -21,11 +22,14 @@ export async function respondPage(db: D1Database, now: number): Promise<Response
     logError("web.read_failed", { kind: "storage_error" });
     return new Response(renderPage({ kind: "error" }), {
       status: 503,
-      headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" },
+      headers: withSecurityHeaders({ "content-type": "text/html; charset=utf-8", "cache-control": "no-store" }),
     });
   }
   return new Response(body, {
-    headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300" },
+    headers: withSecurityHeaders({
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "public, max-age=300",
+    }),
   });
 }
 

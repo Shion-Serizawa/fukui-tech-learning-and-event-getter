@@ -2,6 +2,7 @@ import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { commitSuccessfulRun } from "../src/db/write.ts";
 import type { HokurikuEvent } from "../src/domain/event.ts";
+import { SECURITY_HEADERS } from "../src/web/security-headers.ts";
 import { respondFeed } from "../web/functions/feed.xml.ts";
 import { HOUR, NOW } from "./fakes.ts";
 import { hEvent } from "./events.ts";
@@ -110,5 +111,17 @@ describe("RSS-09: D1 が読めないとき", () => {
     const res = await respondFeed(env.DB, NOW, SITE);
     expect(res.status).toBe(503);
     expect(await res.text()).not.toContain("<rss");
+  });
+});
+
+describe("WEB-15: RSS の応答にもセキュリティヘッダを付ける", () => {
+  it("通常時とエラー時", async () => {
+    const ok = await respondFeed(env.DB, NOW, SITE);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    await env.DB.exec("DROP TABLE events");
+    const failed = await respondFeed(env.DB, NOW, SITE);
+    for (const res of [ok, failed]) {
+      for (const [name, value] of Object.entries(SECURITY_HEADERS)) expect(res.headers.get(name)).toBe(value);
+    }
   });
 });

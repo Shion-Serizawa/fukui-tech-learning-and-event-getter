@@ -75,7 +75,14 @@ export async function commitSuccessfulRun(
     db.prepare(INSERT_RUN).bind(run.startedAt, run.finishedAt, "success", null, run.events.length),
     db.prepare("DELETE FROM events WHERE ended_at < ?1").bind(cutoff),
     db.prepare("DELETE FROM collection_runs WHERE finished_at < ?1").bind(cutoff),
-    db.prepare("DELETE FROM notifications WHERE sent_at < ?1").bind(cutoff),
+    // 復旧通知をまだ送っていない停止の記録は残す。消すと30日を超える停止のあとに復旧通知が出ない（HLT-03）。
+    db
+      .prepare(
+        `DELETE FROM notifications AS n WHERE n.sent_at < ?1
+           AND NOT (n.key LIKE 'stale:%'
+                    AND NOT EXISTS (SELECT 1 FROM notifications AS r WHERE r.key = 'recovered:' || substr(n.key, 7)))`,
+      )
+      .bind(cutoff),
   ]);
 }
 

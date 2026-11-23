@@ -28,3 +28,17 @@ describe("Cron ハンドラの配線（COL-09, HLT-04）", () => {
     expect(notified.results).toEqual([]);
   });
 });
+
+describe("COL-06: API キーが未設定なら connpass を呼ばない", () => {
+  it("シークレットが undefined のとき、収集回を記録せず設定不備のログを出す", async () => {
+    const errors: string[] = [];
+    vi.spyOn(console, "error").mockImplementation((line: string) => errors.push(line));
+    const withoutKey: Env = { ...env };
+    Reflect.deleteProperty(withoutKey, "CONNPASS_API_KEY");
+    await worker.scheduled(createScheduledController({ scheduledTime: NOW, cron: "17 * * * *" }), withoutKey);
+
+    const runs = await env.DB.prepare("SELECT * FROM collection_runs").all();
+    expect(runs.results).toEqual([]);
+    expect(errors.some((l) => l.includes("collect.misconfigured"))).toBe(true);
+  });
+});

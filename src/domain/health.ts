@@ -1,7 +1,10 @@
 import type { FailureKind } from "./event.ts";
 import { HOUR_MS, formatJstMinute } from "./time.ts";
 
-/** HLT-01: 最新の成功からこれを超えたら停止中。1時間ごとの収集が3回続けて失敗した状態。 */
+/**
+ * HLT-01: 最新の成功回の終了からこれを超えたら停止中。
+ * 終了時刻は起動時刻より数秒遅いので、実際に停止中と判定されるのは4回目の失敗の時点（最後の成功から約4時間後）。
+ */
 export const STALE_AFTER_MS = 3 * HOUR_MS;
 
 export function isStale(lastSuccessFinishedAt: number | null, now: number): boolean {

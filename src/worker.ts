@@ -19,7 +19,9 @@ export default {
       timeoutSignal: (ms: number) => AbortSignal.timeout(ms),
     };
 
-    if (env.CONNPASS_API_KEY === "") {
+    // 未設定のシークレットは実行時には undefined になる（型は string と生成されるが当てにしない）
+    const apiKey: unknown = env.CONNPASS_API_KEY;
+    if (typeof apiKey !== "string" || apiKey === "") {
       // 収集回として記録しない。成功回が途絶えるので、停止通知（HLT-02）で気づける。
       logError("collect.misconfigured", { kind: "missing_api_key" });
     } else {
@@ -27,7 +29,7 @@ export default {
         {
           ...io,
           db: env.DB,
-          apiKey: env.CONNPASS_API_KEY,
+          apiKey,
           sleep: (ms) => scheduler.wait(ms),
           clock: () => Date.now(),
         },

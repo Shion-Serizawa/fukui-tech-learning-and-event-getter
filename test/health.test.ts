@@ -128,3 +128,16 @@ describe("HLT-05: 送り先の検証", () => {
     expect(requests).toHaveLength(0);
   });
 });
+
+describe("HLT-03: 30日を超える停止のあとでも復旧通知を送る", () => {
+  it("成功回の掃除で、未復旧の停止の記録を消さない", async () => {
+    await success(NOW);
+    const { deps, requests } = discord([ok(), ok()]);
+    await checkHealthAndNotify(deps, NOW + 4 * HOUR);
+    const later = NOW + 31 * 24 * HOUR;
+    await commitSuccessfulRun(env.DB, { startedAt: later - 1000, finishedAt: later, events: [] });
+    await checkHealthAndNotify(deps, later);
+    expect(requests).toHaveLength(2);
+    expect(bodyText(requests[1])).toContain("復旧しました");
+  });
+});

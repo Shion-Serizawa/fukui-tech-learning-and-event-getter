@@ -2,6 +2,7 @@ import { readSnapshot } from "../../src/db/read.ts";
 import { selectFeedEvents } from "../../src/domain/listing.ts";
 import { renderFeed } from "../../src/feed/rss.ts";
 import { logError } from "../../src/log.ts";
+import { withSecurityHeaders } from "../../src/web/security-headers.ts";
 
 /** GET /feed.xml（F-02 RSS）。認証はしない（C-13 の変更）。 */
 export async function respondFeed(db: D1Database, now: number, siteUrl: string): Promise<Response> {
@@ -14,11 +15,14 @@ export async function respondFeed(db: D1Database, now: number, siteUrl: string):
     logError("feed.read_failed", { kind: "storage_error" });
     return new Response("Service Unavailable", {
       status: 503,
-      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+      headers: withSecurityHeaders({ "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }),
     });
   }
   return new Response(body, {
-    headers: { "content-type": "application/rss+xml; charset=utf-8", "cache-control": "public, max-age=300" },
+    headers: withSecurityHeaders({
+      "content-type": "application/rss+xml; charset=utf-8",
+      "cache-control": "public, max-age=300",
+    }),
   });
 }
 

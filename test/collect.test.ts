@@ -130,7 +130,10 @@ describe("STO-05: 最新の成功回で取得できたイベントだけを出�
 
 describe("STO-06: 古いデータの掃除", () => {
   it("終了から30日を超えたイベントと、30日より古い収集回・通知の記録を消す", async () => {
-    await env.DB.prepare("INSERT INTO notifications (key, sent_at) VALUES ('stale:old', ?1), ('stale:new', ?2)")
+    await env.DB.prepare(
+      `INSERT INTO notifications (key, sent_at) VALUES
+         ('stale:old', ?1), ('recovered:old', ?1), ('stale:unrecovered', ?1), ('stale:new', ?2)`,
+    )
       .bind(NOW - 31 * DAY, NOW - 29 * DAY)
       .run();
     await env.DB.prepare(
@@ -147,6 +150,10 @@ describe("STO-06: 古いデータの掃除", () => {
 
     expect(await allRows("SELECT source_event_id FROM events")).toEqual([{ source_event_id: "29" }]);
     expect(await allRows("SELECT status FROM collection_runs")).toEqual([{ status: "success" }]);
-    expect(await allRows("SELECT key FROM notifications")).toEqual([{ key: "stale:new" }]);
+    // 復旧済みの古い記録は消し、復旧通知をまだ送っていない停止の記録は残す（HLT-03）
+    expect(await allRows("SELECT key FROM notifications ORDER BY key")).toEqual([
+      { key: "stale:new" },
+      { key: "stale:unrecovered" },
+    ]);
   });
 });

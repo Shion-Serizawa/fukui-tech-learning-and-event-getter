@@ -28,8 +28,13 @@ export function parseRequirements(markdown: string): Requirement[] {
   return out;
 }
 
+/** describe / it / test の名前（第1引数の文字列）に現れる要件 ID だけを拾う。コメントや本文の文字列は数えない。 */
+const TEST_NAME = /\b(?:describe|it|test)(?:\.\w+(?:\([^)]*\))?)*\(\s*(["'`])((?:\\.|(?!\1).)*)\1/g;
+
 export function referencedIds(source: string): Set<string> {
-  return new Set(source.match(ID) ?? []);
+  const ids = new Set<string>();
+  for (const m of source.matchAll(TEST_NAME)) for (const id of (m[2] ?? "").match(ID) ?? []) ids.add(id);
+  return ids;
 }
 
 function testFiles(dir: string): string[] {
